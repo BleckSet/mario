@@ -127,16 +127,32 @@
 
     </header>
     <div class="wrapper">
-        <section class="intro">
-<div class="container">
+       <section class="intro ">
 
-    <div class="slider-container">
-        <img class="image before" src='img/before.png'>
-        <img class="image after" src='img/after.png'>
+            <div class="intro_inner">
+                <div class="inro_head">
+                    <h1>Профессиональная химчистка <br> мебели и салона авто</h1>
+                    <div >
+                        <p> <strong>Получи консультацию </strong>
+                            по удалению <br> пятен с мебели или салона авто</p>
+                        <div class="btn"> Получить консультацию</div>
+                    </div>
+                    
+                </div>
+            </div>
+        <div class="slider-container">
+        <img class="image before" src='img/after.png'>
+        <img class="image after" src='img/before.png'>
         <canvas id="divider-canvas" resize></canvas>
     </div>
 </div>
+            <div id="slider-handle"></div>
+        </div>
+
+
+
         </section>
+        
         
         <section class="advantages">
             <div class="container">
@@ -532,5 +548,144 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.11/paper-full.min.js"></script>
 <script src="js/main.js"></script>
+	
+<script type="text/paperscript" canvas="divider-canvas">
+  var values = {
+    friction: 1,
+    timeStep: 0.5,
+    amount: 15,
+    mass: 5,
+    count: 2
+};
+values.invMass = 1 / values.mass;
+
+var path, springs;
+var size = view.size * [1, 1];
+var beforeImage, afterImage;
+
+var Spring = function(a, b, strength, restLength) {
+    this.a = a;
+    this.b = b;
+    this.restLength = restLength || 100;
+    this.strength = strength ? strength : 0.55;
+    this.mamb = values.invMass * values.invMass;
+};
+
+Spring.prototype.update = function() {
+    var delta = this.b - this.a;
+    var dist = delta.length;
+    var normDistStrength = (dist - this.restLength) /
+            (dist * this.mamb) * this.strength;
+    delta.x *= normDistStrength * values.invMass * 0.2;
+    if (!this.a.fixed)
+        this.a.x += delta.x;
+    if (!this.b.fixed)
+        this.b.x -= delta.x;
+};
+
+function createPath(strength) {
+    var path = new Path({
+        fillColor: 'rgba(14, 25, 50, 1)',
+    });
+    springs = [];
+    for (var i = 0; i <= values.amount; i++) {
+        var segment = path.add(new Point(0.5, i / values.amount) * size);
+        var point = segment.point;
+        if (i == 0 || i == values.amount)
+            point.x += size.width;
+        point.px = point.x;
+        point.py = point.y;
+        // The first two and last two points are fixed:
+        point.fixed = i < 2 || i > values.amount - 2;
+        if (i > 0) {
+            var spring = new Spring(segment.previous.point, point, strength);
+            springs.push(spring);
+        }
+    }
+    path.position.y -= size.height / 4;
+    return path;
+}
+
+function onMouseMove(event) {
+    var location = path.getNearestLocation(event.point);
+    var segment = location.segment;
+    var point = segment.point;
+
+    if (!point.fixed && location.distance < size.width / 4) {
+        var x = event.point.x;
+        point.x += (x - point.x) / 6;
+        if (segment.previous && !segment.previous.fixed) {
+            var previous = segment.previous.point;
+            previous.x += (x - previous.x) / 24;
+        }
+        if (segment.next && !segment.next.fixed) {
+            var next = segment.next.point;
+            next.x += (x - next.x) / 24;
+        }
+    }
+}
+
+function updateWave(path) {
+    var force = 1 - values.friction * values.timeStep * values.timeStep;
+    for (var i = 0, l = path.segments.length; i < l; i++) {
+        var point = path.segments[i].point;
+        var dx = (point.x - point.px) * force;
+        point.px = point.x;
+        point.x = Math.max(point.x + dx, 0);
+    }
+
+    for (var j = 0, l = springs.length; j < l; j++) {
+        springs[j].update();
+    }
+    path.smooth({ type: 'continuous' });
+}
+
+
+
+// Add image
+beforeImage = new Raster('img/after.png');
+beforeImage.position = view.center;
+beforeImage.height = 1000;
+beforeImage.width = view.size.width;
+beforeImage.position.x = view.bounds.width / 2;
+
+afterImage = new Raster('img/after.png');
+afterImage.position = view.center;
+afterImage.height = 1000;
+afterImage.width = view.size.width;
+afterImage.position.x = view.bounds.width / 2;
+afterImage.visible = false; // Initially hide afterImage
+
+function updateImages() {
+    // Update the image position and size based on canvas changes
+    beforeImage.height = 1000;
+    beforeImage.width = view.size.width;
+    beforeImage.position.x = view.bounds.width / 2;
+
+    afterImage.height = 1000;
+    afterImage.width = view.size.width;
+    afterImage.position.x = view.bounds.width / 2;
+}
+
+function onResize() {
+    if (path)
+        path.remove();
+    size = view.bounds.size * [1, 2];
+    path = createPath(0.1);
+
+    // Call updateImages() on resize to adjust image dimensions and position
+    updateImages();
+}
+
+onFrame = function(event) {
+    updateWave(path);
+    updateImages();
+};
+
+view.onResize = onResize;
+view.onFrame = onFrame;
+
+</script>
+
 </body>
 </html>
