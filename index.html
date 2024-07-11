@@ -42,17 +42,7 @@
         <ul>
     
       
-            <li>
-    
-                <a href="#">
-                    1
-                </a>
-             
-
-            </li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-    
+          
                 <a href="#" class="btn">
                     Закаказать
                 </a>
@@ -127,7 +117,7 @@
 
     </header>
     <div class="wrapper">
-       <section class="intro ">
+        <section class="intro ">
 
             <div class="intro_inner">
                 <div class="inro_head">
@@ -141,8 +131,8 @@
                 </div>
             </div>
         <div class="slider-container">
-        <img class="image before" src='img/after.png'>
-        <img class="image after" src='img/before.png'>
+        <img class="image before" src='img/after.webp'>
+        <img class="image after" src='img/before.webp'>
         <canvas id="divider-canvas" resize></canvas>
     </div>
 </div>
@@ -152,7 +142,6 @@
 
 
         </section>
-        
         
         <section class="advantages">
             <div class="container">
@@ -548,7 +537,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.11/paper-full.min.js"></script>
 <script src="js/main.js"></script>
-	
+
 <script type="text/paperscript" canvas="divider-canvas">
   var values = {
     friction: 1,
@@ -582,8 +571,10 @@ Spring.prototype.update = function() {
     if (!this.b.fixed)
         this.b.x -= delta.x;
 };
-
 function createPath(strength) {
+    // Hide afterImage when creating the path
+    afterImage.visible = false;
+
     var path = new Path({
         fillColor: 'rgba(14, 25, 50, 1)',
     });
@@ -643,13 +634,13 @@ function updateWave(path) {
 
 
 // Add image
-beforeImage = new Raster('img/after.png');
+beforeImage = new Raster('img/after.webp');
 beforeImage.position = view.center;
 beforeImage.height = 1000;
 beforeImage.width = view.size.width;
 beforeImage.position.x = view.bounds.width / 2;
 
-afterImage = new Raster('img/after.png');
+afterImage = new Raster('img/after.webp');
 afterImage.position = view.center;
 afterImage.height = 1000;
 afterImage.width = view.size.width;
