@@ -185,9 +185,11 @@ select {
 }
 header {
   padding: 20px 0;
-  position: relative;
+  position: absolute;
+  top: 0;
+  width: 100%;
   height: 85px;
-  z-index: 5;
+  z-index: 11;
 }
 header:before {
   content: "";
@@ -312,11 +314,56 @@ h6 {
 }
 
 .intro {
-  width: 100%;
   margin-top: 0;
-  height: 1200px;
-  background: url("../img/intro_bg.jpg") center/cover no-repeat;
+  position: relative;
+  height: 950px;
 }
+
+.inro_head {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.inro_head div {
+  margin-top: 25px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 20px;
+}
+.inro_head p {
+  font-family: "SF Pro Display", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 0.03em;
+  color: #fff;
+}
+.inro_head p strong {
+  font-weight: 600;
+}
+
+.intro_inner {
+  position: absolute;
+  top: 120px;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+}
+
 .slider-container {
   position: relative;
   width: 100%;
@@ -336,7 +383,8 @@ h6 {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Adjust as necessary */
+  -o-object-fit: cover;
+     object-fit: cover; /* Adjust as necessary */
 }
 
 #divider-canvas {
@@ -344,8 +392,9 @@ h6 {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%; 
-  opacity: 0.6;
+  background: transparent;
+  opacity: 0.8;
+  height: 100%;
   z-index: 9; /* Ensure canvas is above images */
 }
 
@@ -360,6 +409,7 @@ h6 {
   margin-top: 60px;
 }
 .advantages_inner .item {
+  background: transparent;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -441,7 +491,7 @@ h6 {
   display: -ms-flexbox;
   display: flex;
   gap: 15px;
-  max-width: 735px;
+  max-width: 800px;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
 }
